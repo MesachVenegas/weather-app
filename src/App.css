@@ -1,0 +1,9 @@
+:root{
+  --font-color: #222222;
+}
+
+body{
+  display: grid;
+  place-items: center;
+  width: 100vw;
+}
