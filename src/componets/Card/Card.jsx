@@ -11,30 +11,31 @@ const Card = () => {
     const [data, setData] = useState("");
     const [units, setUnits] = useState(true);
 
-    const convert = () => {
-        setUnits(!units)
+    // Obtengo la ubicación del usuario.
+    const success = (pos) => {
+        setLatitude(pos.coords.latitude);
+        setLongitude(pos.coords.longitude);
     }
+    navigator.geolocation.getCurrentPosition(success, error, options);
 
-    //  http://api.openweathermap.org/geo/1.0/reverse?lat={latitude}&lon={longitude}&limit={limit}&appid={key}
-    // `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&units=${units ? 'metric' : 'imperial'}&lang=es`
-    // https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={key}
+    // Convierte las unidades de medida de Celsius a Fahrenheit y viseversa.
+    const convert = () => setUnits(!units);
+    // Realiza la solicitud al API y Settea el valor de 'data' con la respuesta obtenida.
     useEffect( () =>{
         axios
-            .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&units=${units? 'metric':'imperial'}&lang=es`)
-            .then(res => setData(res.data))
-            .catch(error => console.log(error));
+        .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&units=${units? 'metric':'imperial'}&lang=es`)
+        .then(res => setData(res.data))
+        // .catch(error => console.log(error));
+
     },[])
 
-    if (!data) return null;
 
-    const success = (pos) => {
-        const crd = pos.coords;
-        setLatitude(crd.latitude);
-        setLongitude(crd.longitude);
+    if (!data){
+        console.log('No se pudo obtener la información');
+    }else{
+        console.log('Loading...');
     }
 
-
-    navigator.geolocation.getCurrentPosition(success, error, options);
 
     // console.log(data);
     // console.log(data.name);
