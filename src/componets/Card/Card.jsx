@@ -19,16 +19,19 @@ const Card = () => {
     navigator.geolocation.getCurrentPosition(success, error, options);
 
     // Convierte las unidades de medida de Celsius a Fahrenheit y viseversa.
-    const convert = () => setUnits(!units);
     // Realiza la solicitud al API y Settea el valor de 'data' con la respuesta obtenida.
     useEffect( () =>{
         axios
         .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}&units=${units? 'metric':'imperial'}&lang=es`)
         .then(res => setData(res.data))
         // .catch(error => console.log(error));
-
     },[])
 
+    const convert = () => {
+        let tempToFahrenheit = (data.main?.temp) + 32;
+        let tempToCelsius = (data.main?.temp) + 32;
+        setUnits(!units)
+    };
 
     if (!data){
         console.log('No se pudo obtener la información');
@@ -41,9 +44,11 @@ const Card = () => {
     // console.log(data.name);
     return (
         <div className='card'>
-            <h1>{data.name},{data.sys?.country}</h1>
-            <h2>{data.weather?.[0].description}</h2>
-            <ul>
+            <div className="weather__head">
+                <h1 className='city'>{data.name}, {data.sys?.country}</h1>
+                <h2 className='city__status'>{data.weather?.[0].description}</h2>
+            </div>
+            <ul className='weather__data'>
                 <li><i className="fa-solid fa-temperature-three-quarters"></i> {data.main?.temp} {units ? '°C' : '°F'}</li>
                 <li>min {data.main?.temp_min} {units ? '°C' : '°F'}</li>
                 <li>max {data.main?.temp_max} {units ? '°C' : '°F'}</li>

@@ -1,6 +1,22 @@
 .card {
+    display: grid;
+    place-items: center;
     width: 80%;
+    background-image: url("https://images.unsplash.com/photo-1599209248411-5124adbb1da2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80");
     padding: 1.5em;
     border-radius: .5em;
     box-shadow: 0 16px 32px rgba(0, 0, 0, .5);
+}
+
+.weather__head{
+    display: grid;
+    place-items: center;
+    padding: 1.5em;
+}
+
+.weather__data{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    list-style: none;
 }
