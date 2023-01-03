@@ -9,25 +9,35 @@ const Card = () => {
     const [data, setData] = useState("");
     const [backgroundImage, setBackgroundImage] = useState(backgrounds.default)
     const [units, setUnits] = useState(true);
-    const [current, setCurrent] = useState('')
+    const [current, setCurrent] = useState(0)
 
     // Obtengo la ubicación del usuario.
     const success = async (pos) => {
         const crd = await pos.coords
         await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${crd.latitude}&lon=${crd.longitude}&appid=${key}&lang=es`)
-            .then(res => setData(res.data))
-            .catch(error => console.log(error));
+            .then( res => setData(res.data) )
+            .catch( error => console.log(error) );
     }
 
     // console.log(backgroundImage);
     useEffect( () =>{
         navigator.geolocation.getCurrentPosition(success, error, options);
+        console.log(current.toFixed(0));
+        setCurrent(data.main?.temp - 273.15)
     },[])
 
 
     const convert = () => {
         setUnits(!units)
-        navigator.geolocation.getCurrentPosition(success, error, options);
+        let Fahrenheit = ((data.main?.temp - 273.15) * 9 / 5 + 32).toFixed(0)
+        let Celsius = (data.main?.temp - 273.15).toFixed(0)
+
+        if(units){
+            console.log(data.main);
+            setCurrent(Celsius)
+        }else{
+            setCurrent(Fahrenheit)
+        }
     };
 
     const loadPanel = () => {
@@ -35,7 +45,7 @@ const Card = () => {
             return (
                 <>
                     <div className="loader__container">
-                        <span class="loader"></span>
+                        <span className="loader"></span>
                     </div>
                 </>
                 )
@@ -45,15 +55,15 @@ const Card = () => {
                     <div className="weather__img">
                         <img src={`http://openweathermap.org/img/wn/${data.weather?.[0].icon}@2x.png`} alt="" />
                         <h2 className='city__status'>{data.weather?.[0].description}</h2>
-                        <p className="weather__current">
-                            {data.main?.temp}
-                        </p>
+                        <p className="weather__current">{current} {units ? '°F' : '°C'}</p>
                     </div>
                     <div className="weather__head">
                         <h1 className='city'>{data.name}, {data.sys?.country}</h1>
                     </div>
                     <div className="data__temp">
-                        <button onClick={convert}><i class="fa-solid fa-rotate"></i></button>
+                        <button className="temp__units" onClick={convert}>
+                            <i className="fa-solid fa-rotate"></i> {units ? 'Fahrenheit' : 'Celsius'}
+                        </button>
                         <p>Min/Max: {data.main?.temp_min} / {data.main?.temp_max}</p>
                         <p>Sensacion: {data.main?.feels_like}</p>
                     </div>
